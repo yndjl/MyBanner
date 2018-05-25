@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyBannerViewViewPager">
+        <attr name="shufflingTime" format="integer" />
+        <attr name="openMZ" format="boolean" />
+        <attr name="animationSelf" format="reference" />
+        <attr name="indicatorShowOrNot" format="boolean" />
+    </declare-styleable>
+</resources>
