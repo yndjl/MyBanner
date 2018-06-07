@@ -35,10 +35,12 @@ public class MyBannerViewViewPager extends RelativeLayout {
     int bannerType = BANNER_TYPE_NOMOL;
     LayoutParams viewPagerLayoutParams;
     int delayMillis = 4000;//轮播的延时时间
-    int viewPagerCurrentItem = 0;//初始化轮播显示View的位置
+    int viewPagerCurrentItem = 1;//初始化轮播显示View的位置（data中数据的真实位置 ）
     private Boolean openCarousel = true;//轮播模式
     int[] dataRes;//图片来源---资源ID
     String[] dataUrl;//图片来源---网络url地址
+    List<View> dotsList = null;//外部用户自己定义好了指示器，传递自己的指示器view集合进来，用于在本控件内部控制轮播时指示器的切换
+    Integer dotsFocusRes = -1, dotsNormalRes = -1;//用户指定指示器图片资源
 
     public void initMyBannerViewValue(Builder builder) {
         this.context = builder.context;
@@ -51,6 +53,9 @@ public class MyBannerViewViewPager extends RelativeLayout {
         this.delayMillis = builder.delayMillis;
         this.viewPagerCurrentItem = builder.viewPagerCurrentItem;
         this.openCarousel = builder.openCarousel;
+        this.dotsList = builder.dotsList;
+        this.dotsFocusRes = builder.dotsFocusRes;
+        this.dotsNormalRes = builder.dotsNormalRes;
         startViewPager();
     }
 
@@ -63,11 +68,6 @@ public class MyBannerViewViewPager extends RelativeLayout {
         this.context = context;
         View inflate = LayoutInflater.from(context).inflate(R.layout.my_banner_view_vp, this, true);
         viewPager = (ViewPager) inflate.findViewById(R.id.vp_my_banner_view_vp);
-        if (bannerType == 1) {//xml中设置为魅族模式时，设置viewPager的margin距离
-            viewPagerLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            viewPagerLayoutParams.setMargins(150, 0, 150, 0);
-            viewPager.setLayoutParams(viewPagerLayoutParams);
-        }
     }
 
 
@@ -106,23 +106,42 @@ public class MyBannerViewViewPager extends RelativeLayout {
         adapter = new AdapterViewPager(this.data);
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(viewPagerCurrentItem + 1);//设置为魅族模式时，设置初始page时，页面页面在data中的position加1
+        viewPager.setCurrentItem(++viewPagerCurrentItem);//设置为魅族模式时，设置初始page时，页面在data中的position加1
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (positionOffset != 0.0f) {
                     handler.removeCallbacksAndMessages(null);
-                } else {
+                } else {//无论是轮播还是手动滑动的时候，都能保证前面没有线程执行自动轮播功能
                     handler.postDelayed(target, delayMillis);
                 }
 
                 // TODO: 2018/5/25 滑动的时候的页面计算
+                Log.d("MyBannerView", "position--" + position + "      positionOffset--" + positionOffset + "      positionOffsetPixels--" + positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
                 viewPagerCurrentItem = position;
                 Log.d("MyBannerView", "viewPagerCurrentItem    " + viewPagerCurrentItem);
+                //pager手动滑动时切换到data中的第一个和倒数第一个时，松手后自动切换到倒数第二个和第二个位置
+                if (position == 0) {
+                    viewPagerCurrentItem = data.size() - 2;
+                    viewPager.setCurrentItem(viewPagerCurrentItem);
+                } else if (position == data.size() - 1) {
+                    viewPagerCurrentItem = 1;
+                    viewPager.setCurrentItem(viewPagerCurrentItem);
+                }
+                //pager切换时的监听，进行指示器刷新
+                if (dotsList != null && position != 0 && position != data.size() - 1) {
+                    for (int i = 0; i < dotsList.size(); i++) {
+                        if (i == position - 1)
+                            dotsList.get(i).setBackgroundResource(dotsFocusRes);
+                        else
+                            dotsList.get(i).setBackgroundResource(dotsNormalRes);
+                    }
+                }
             }
 
             @Override
@@ -197,6 +216,8 @@ public class MyBannerViewViewPager extends RelativeLayout {
         private Boolean openCarousel = true;//轮播模式
         int[] dataRes;
         String[] dataUrl;
+        List<View> dotsList = null;//外部用户自己定义好了指示器，传递自己的指示器view集合进来，用于在本控件内部控制轮播时指示器的切换
+        Integer dotsFocusRes = -1, dotsNormalRes = -1;//用户指定指示器图片资源
 
 
         public Builder(Context context, int[] dataRes, int bannerType) {
@@ -238,6 +259,13 @@ public class MyBannerViewViewPager extends RelativeLayout {
 
         public Builder setOpenCarousel(boolean openCarousel) {
             this.openCarousel = openCarousel;
+            return this;
+        }
+
+        public Builder setIndicatorExternalUserDefined(List<View> dotsList, Integer dotsFocusRes, Integer dotsNormalRes) {
+            this.dotsList = dotsList;
+            this.dotsFocusRes = dotsFocusRes;
+            this.dotsNormalRes = dotsNormalRes;
             return this;
         }
 

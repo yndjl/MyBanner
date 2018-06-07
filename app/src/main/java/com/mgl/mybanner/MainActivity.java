@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.mgl.mybannerview.MyBannerViewViewPager;
 
@@ -26,38 +27,30 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initBannerByViewPager() {
         MyBannerViewViewPager viewViewPager = (MyBannerViewViewPager) findViewById(R.id.bannerVP);
-//        ImageView imageView0 = new ImageView(this);
-//        imageView0.setImageResource(com.mgl.mybannerview.R.drawable.shouye1);
-////        imageView0.setImageResource(com.mgl.mybannerview.R.drawable.a1);
-//        ImageView imageView1 = new ImageView(this);
-//        imageView1.setImageResource(com.mgl.mybannerview.R.drawable.shouye3);
-////        imageView1.setImageResource(com.mgl.mybannerview.R.drawable.a2);
-//        ImageView imageView2 = new ImageView(this);
-//        imageView2.setImageResource(com.mgl.mybannerview.R.drawable.shouye4);
-////        imageView2.setImageResource(com.mgl.mybannerview.R.drawable.a3);
-//        ImageView imageView3 = new ImageView(this);
-//        imageView3.setImageResource(com.mgl.mybannerview.R.drawable.shouye5);
-////        imageView3.setImageResource(com.mgl.mybannerview.R.drawable.a1);
-//
-//
-//        ImageView imageView4 = new ImageView(this);
-//        imageView4.setImageResource(com.mgl.mybannerview.R.drawable.shouye1);
-//        ImageView imageView5 = new ImageView(this);
-//        imageView5.setImageResource(com.mgl.mybannerview.R.drawable.shouye5);
-//        data.add(imageView5);
-//        data.add(imageView0);
-//        data.add(imageView1);
-//        data.add(imageView2);
-//        data.add(imageView3);
-//        data.add(imageView4);
-        int[] data=new int[]{R.drawable.shouye1,R.drawable.shouye3,R.drawable.shouye4,R.drawable.shouye5};
-        MyBannerViewViewPager.Builder builder=viewViewPager.new Builder(this,data,MyBannerViewViewPager.BANNER_TYPE_MEIZU);
-        builder.setPageScaleMin(0.65f)
-                .setViewPaddingLeftAndRight(50)
+        int[] data = new int[]{R.drawable.shouye1, R.drawable.shouye3, R.drawable.shouye6};
+        List<View> dotsList = new ArrayList<>();
+        LinearLayout dotsContainer = (LinearLayout) findViewById(R.id.ll_activity_shouye_indicator_container);
+        for (int i = 0; i < data.length; i++) {
+            ImageView imageView = new ImageView(this);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(15, 15);
+            if (i != 0)
+                layoutParams.setMargins(20, 0, 0, 0);
+            imageView.setLayoutParams(layoutParams);
+//            if (i == 0)
+//                imageView.setImageResource(R.drawable.dot_focused);
+//            else
+//                imageView.setImageResource(R.drawable.dot_normal);
+            dotsList.add(imageView);
+            dotsContainer.addView(imageView);
+        }
+        MyBannerViewViewPager.Builder builder = viewViewPager.new Builder(this, data, MyBannerViewViewPager.BANNER_TYPE_MEIZU);
+        builder.setPageScaleMin(0.75f)
+                .setViewPaddingLeftAndRight(0)
                 .setDelayMillis(4500)
                 .setVviewPagerCurrentItem(0)
-                .setViewPagerMarginLeftAndRight(150)
+                .setViewPagerMarginLeftAndRight(0)
                 .setOpenCarousel(true)
+                .setIndicatorExternalUserDefined(dotsList, R.drawable.dot_focused, R.drawable.dot_normal)
                 .build();
     }
 
