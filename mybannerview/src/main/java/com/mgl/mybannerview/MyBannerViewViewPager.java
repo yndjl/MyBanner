@@ -107,6 +107,14 @@ public class MyBannerViewViewPager extends RelativeLayout {
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(++viewPagerCurrentItem);//设置为魅族模式时，设置初始page时，页面在data中的position加1
+        if (dotsList != null && viewPagerCurrentItem != 0 && viewPagerCurrentItem != data.size() - 1) {//初始化外部自定义指示器
+            for (int i = 0; i < dotsList.size(); i++) {
+                if (i == viewPagerCurrentItem - 1)
+                    dotsList.get(i).setBackgroundResource(dotsFocusRes);
+                else
+                    dotsList.get(i).setBackgroundResource(dotsNormalRes);
+            }
+        }
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
