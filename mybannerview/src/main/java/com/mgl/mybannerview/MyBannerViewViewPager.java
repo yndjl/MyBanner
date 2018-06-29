@@ -36,7 +36,7 @@ public class MyBannerViewViewPager extends RelativeLayout {
     LayoutParams viewPagerLayoutParams;
     int delayMillis = 4000;//轮播的延时时间
     int viewPagerCurrentItem = 1;//初始化轮播显示View的位置（data中数据的真实位置 ）
-    private Boolean openCarousel = true;//轮播模式
+    private Boolean openCarousel = false;//轮播模式
     int[] dataRes;//图片来源---资源ID
     String[] dataUrl;//图片来源---网络url地址
     List<View> dotsList = null;//外部用户自己定义好了指示器，传递自己的指示器view集合进来，用于在本控件内部控制轮播时指示器的切换
@@ -119,10 +119,13 @@ public class MyBannerViewViewPager extends RelativeLayout {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (positionOffset != 0.0f) {
-                    handler.removeCallbacksAndMessages(null);
-                } else {//无论是轮播还是手动滑动的时候，都能保证前面没有线程执行自动轮播功能
-                    handler.postDelayed(target, delayMillis);
+
+                if (openCarousel) {//2018/6/29  调整了ViewPager时是否开启轮播的功能的判断位置（因为在viewpager在屏幕完成绘制时会调用onPageScrolled方法）
+                    if (positionOffset != 0.0f) {
+                        handler.removeCallbacksAndMessages(null);
+                    } else {//无论是轮播还是手动滑动的时候，都能保证前面没有线程执行自动轮播功能
+                        handler.postDelayed(target, delayMillis);
+                    }
                 }
 
                 // TODO: 2018/5/25 滑动的时候的页面计算
@@ -159,8 +162,6 @@ public class MyBannerViewViewPager extends RelativeLayout {
         });
 
         setImgOutScreenScaleAnimation();
-        if (openCarousel)
-            handler.postDelayed(target, delayMillis);
     }
 
     /**
@@ -221,7 +222,7 @@ public class MyBannerViewViewPager extends RelativeLayout {
         int bannerType = BANNER_TYPE_NOMOL;
         int delayMillis = 4000;
         int viewPagerCurrentItem = 0;
-        private Boolean openCarousel = true;//轮播模式
+        private Boolean openCarousel = false;//轮播模式
         int[] dataRes;
         String[] dataUrl;
         List<View> dotsList = null;//外部用户自己定义好了指示器，传递自己的指示器view集合进来，用于在本控件内部控制轮播时指示器的切换

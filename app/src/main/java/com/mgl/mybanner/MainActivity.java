@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 .setDelayMillis(4500)
                 .setVviewPagerCurrentItem(0)
                 .setViewPagerMarginLeftAndRight(0)
-                .setOpenCarousel(true)
+                .setOpenCarousel(false)
                 .setIndicatorExternalUserDefined(dotsList, R.drawable.dot_focused, R.drawable.dot_normal)
                 .build();
     }
