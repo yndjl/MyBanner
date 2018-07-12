@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.mgl.mybannerview.MyBannerViewViewPager;
 
@@ -52,6 +53,22 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenCarousel(false)
                 .setIndicatorExternalUserDefined(dotsList, R.drawable.dot_focused, R.drawable.dot_normal)
                 .build();
+        viewViewPager.addOnPageChangeListener(new MyBannerViewViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Toast.makeText(MainActivity.this, ""+position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     /**
