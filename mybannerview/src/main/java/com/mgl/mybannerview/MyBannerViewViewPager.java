@@ -119,7 +119,8 @@ public class MyBannerViewViewPager extends RelativeLayout {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                onPageChangeListener.onPageScrolled(position - 1, positionOffset, positionOffsetPixels);//减1是为了传递习惯的java中的序号记录法
+                if (onPageChangeListener != null)
+                    onPageChangeListener.onPageScrolled(position - 1, positionOffset, positionOffsetPixels);//减1是为了传递习惯的java中的序号记录法
                 if (openCarousel) {//2018/6/29  调整了ViewPager时是否开启轮播的功能的判断位置（因为在viewpager在屏幕完成绘制时会调用onPageScrolled方法）
                     if (positionOffset != 0.0f) {
                         handler.removeCallbacksAndMessages(null);
@@ -134,7 +135,8 @@ public class MyBannerViewViewPager extends RelativeLayout {
 
             @Override
             public void onPageSelected(int position) {
-                onPageChangeListener.onPageSelected(position - 1);
+                if (onPageChangeListener != null)
+                    onPageChangeListener.onPageSelected(position - 1);
                 viewPagerCurrentItem = position;
                 Log.d("MyBannerView", "viewPagerCurrentItem    " + viewPagerCurrentItem);
                 //pager手动滑动时切换到data中的第一个和倒数第一个时，松手后自动切换到倒数第二个和第二个位置
@@ -158,7 +160,8 @@ public class MyBannerViewViewPager extends RelativeLayout {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                onPageChangeListener.onPageScrollStateChanged(state);
+                if (onPageChangeListener != null)
+                    onPageChangeListener.onPageScrollStateChanged(state);
             }
         });
 
